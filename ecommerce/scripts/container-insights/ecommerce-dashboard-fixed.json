@@ -1,0 +1,106 @@
+{
+    "widgets": [
+        {
+            "type": "metric",
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 6,
+            "properties": {
+                "metrics": [
+                    [ "AWS/ContainerInsights", "cluster_cpu_utilization", "ClusterName", "my-eks-cluster" ],
+                    [ ".", "cluster_memory_utilization", ".", "." ],
+                    [ ".", "cluster_network_total_bytes", ".", "." ]
+                ],
+                "view": "timeSeries",
+                "stacked": false,
+                "region": "us-west-2",
+                "title": "EKS Cluster Overview",
+                "period": 300,
+                "stat": "Average"
+            }
+        },
+        {
+            "type": "metric",
+            "x": 12,
+            "y": 0,
+            "width": 12,
+            "height": 6,
+            "properties": {
+                "metrics": [
+                    [ "AWS/ContainerInsights", "pod_cpu_utilization", "ClusterName", "my-eks-cluster", "Namespace", "ecommerce-backend" ],
+                    [ "AWS/ContainerInsights", "pod_cpu_utilization", "ClusterName", "my-eks-cluster", "Namespace", "ecommerce-database" ],
+                    [ "AWS/ContainerInsights", "pod_cpu_utilization", "ClusterName", "my-eks-cluster", "Namespace", "ecommerce-frontend" ]
+                ],
+                "view": "timeSeries",
+                "stacked": false,
+                "region": "us-west-2",
+                "title": "Namespace CPU Utilization",
+                "period": 300,
+                "stat": "Average"
+            }
+        },
+        {
+            "type": "metric",
+            "x": 0,
+            "y": 6,
+            "width": 12,
+            "height": 6,
+            "properties": {
+                "metrics": [
+                    [ "AWS/ContainerInsights", "pod_memory_utilization", "ClusterName", "my-eks-cluster", "Namespace", "ecommerce-backend" ],
+                    [ "AWS/ContainerInsights", "pod_memory_utilization", "ClusterName", "my-eks-cluster", "Namespace", "ecommerce-database" ],
+                    [ "AWS/ContainerInsights", "pod_memory_utilization", "ClusterName", "my-eks-cluster", "Namespace", "ecommerce-frontend" ]
+                ],
+                "view": "timeSeries",
+                "stacked": false,
+                "region": "us-west-2",
+                "title": "Namespace Memory Utilization",
+                "period": 300,
+                "stat": "Average"
+            }
+        },
+        {
+            "type": "metric",
+            "x": 12,
+            "y": 6,
+            "width": 12,
+            "height": 6,
+            "properties": {
+                "metrics": [
+                    [ "AWS/ContainerInsights", "pod_network_rx_bytes", "ClusterName", "my-eks-cluster", "Namespace", "ecommerce-backend" ],
+                    [ ".", "pod_network_tx_bytes", ".", ".", ".", "." ],
+                    [ ".", "pod_network_rx_bytes", ".", ".", "Namespace", "ecommerce-frontend" ],
+                    [ ".", "pod_network_tx_bytes", ".", ".", ".", "." ]
+                ],
+                "view": "timeSeries",
+                "stacked": false,
+                "region": "us-west-2",
+                "title": "Network I/O by Namespace",
+                "period": 300,
+                "stat": "Average"
+            }
+        },
+        {
+            "type": "metric",
+            "x": 0,
+            "y": 12,
+            "width": 24,
+            "height": 6,
+            "properties": {
+                "metrics": [
+                    [ "AWS/ContainerInsights", "pod_cpu_utilization_over_pod_limit", "ClusterName", "my-eks-cluster", "Namespace", "ecommerce-backend" ],
+                    [ ".", "pod_memory_utilization_over_pod_limit", ".", ".", ".", "." ],
+                    [ ".", "pod_cpu_utilization_over_pod_limit", ".", ".", "Namespace", "ecommerce-database" ],
+                    [ ".", "pod_memory_utilization_over_pod_limit", ".", ".", ".", "." ]
+                ],
+                "view": "timeSeries",
+                "stacked": false,
+                "region": "us-west-2",
+                "title": "Resource Utilization vs Limits",
+                "period": 300,
+                "stat": "Average"
+            }
+        }
+    ]
+}

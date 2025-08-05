@@ -1,0 +1,32 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ecommerce-frontend
+  labels:
+    app: ecommerce
+    tier: frontend
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ecommerce-backend
+  labels:
+    app: ecommerce
+    tier: backend
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ecommerce-database
+  labels:
+    app: ecommerce
+    tier: database
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ecommerce-ingress
+  labels:
+    app: ecommerce
+    tier: ingress

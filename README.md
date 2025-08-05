@@ -37,6 +37,31 @@ gitops-demo/
 3. **Pulled Automatically**: ArgoCD pulls changes
 4. **Continuously Reconciled**: Automatic sync and healing
 
+## GitOps Workflow Architecture
+
+This repository demonstrates a **Continuous Deployment (CD) only** GitOps workflow using:
+
+- **ArgoCD**: Continuous Deployment (watches Git for changes)
+- **Kind**: Local Kubernetes cluster for development  
+- **Kustomize**: Configuration management and patching
+- **Helm**: Package management for ArgoCD installation
+
+### Current Implementation (CD Only)
+The workflow follows the GitOps pattern where:
+1. Configuration changes are made via Git commits to this repository
+2. ArgoCD automatically detects changes
+3. ArgoCD applies changes to the Kubernetes cluster
+4. The cluster state matches the Git repository state
+
+### Missing CI Components
+This setup handles **Continuous Deployment** but lacks **Continuous Integration**:
+- No source code repository with application code
+- No CI pipeline for building/testing applications
+- No automated container image building
+- No automated manifest updates from CI
+
+📖 **For complete CI/CD architecture, see [CI/CD Architecture Documentation](docs/CI-CD-Architecture.md)**
+
 ## Quick Start
 
 ### Prerequisites

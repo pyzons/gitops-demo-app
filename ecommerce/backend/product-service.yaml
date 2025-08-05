@@ -1,0 +1,138 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: product-service-config
+  namespace: ecommerce-backend
+data:
+  MONGODB_URI: "mongodb://admin:password123@mongodb-service.ecommerce-database.svc.cluster.local:27017/ecommerce?authSource=admin"
+  PORT: "3002"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-service
+  namespace: ecommerce-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: product-service
+  template:
+    metadata:
+      labels:
+        app: product-service
+    spec:
+      containers:
+      - name: product-service
+        image: node:16-alpine
+        command: ["/bin/sh"]
+        args: ["-c", "cp /code/* /app/ && cd /app && npm init -y && npm install express mongoose && node server.js"]
+        ports:
+        - containerPort: 3002
+        envFrom:
+        - configMapRef:
+            name: product-service-config
+        volumeMounts:
+        - name: app-code
+          mountPath: /code
+        - name: app-workspace
+          mountPath: /app
+        workingDir: /app
+      volumes:
+      - name: app-code
+        configMap:
+          name: product-service-code
+      - name: app-workspace
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-service
+  namespace: ecommerce-backend
+spec:
+  selector:
+    app: product-service
+  ports:
+  - port: 3002
+    targetPort: 3002
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: product-service-code
+  namespace: ecommerce-backend
+data:
+  server.js: |
+    const express = require('express');
+    const mongoose = require('mongoose');
+    
+    const app = express();
+    app.use(express.json());
+    
+    mongoose.connect(process.env.MONGODB_URI);
+    
+    const productSchema = new mongoose.Schema({
+      name: { type: String, required: true },
+      description: String,
+      price: { type: Number, required: true },
+      category: String,
+      stock: { type: Number, default: 0 },
+      image: String
+    });
+    
+    const Product = mongoose.model('Product', productSchema);
+    
+    app.get('/products', async (req, res) => {
+      try {
+        const { search, category } = req.query;
+        let query = {};
+        if (search) query.name = { $regex: search, $options: 'i' };
+        if (category) query.category = category;
+        const products = await Product.find(query);
+        res.json(products);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    });
+    
+    app.get('/products/:id', async (req, res) => {
+      try {
+        const product = await Product.findById(req.params.id);
+        if (!product) return res.status(404).json({ error: 'Product not found' });
+        res.json(product);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    });
+    
+    app.post('/products', async (req, res) => {
+      try {
+        const product = new Product(req.body);
+        await product.save();
+        res.status(201).json(product);
+      } catch (error) {
+        res.status(400).json({ error: error.message });
+      }
+    });
+    
+    // Initialize sample products
+    app.post('/init-products', async (req, res) => {
+      try {
+        const sampleProducts = [
+          { name: 'Laptop', description: 'High-performance laptop', price: 999, category: 'Electronics', stock: 10, image: '/images/laptop.jpeg' },
+          { name: 'Smartphone', description: 'Latest smartphone', price: 699, category: 'Electronics', stock: 15, image: '/images/smartphone.jpeg' },
+          { name: 'T-Shirt', description: 'Cotton t-shirt', price: 29, category: 'Clothing', stock: 50, image: '/images/t-shirt.jpeg' }
+        ];
+        await Product.insertMany(sampleProducts);
+        res.json({ message: 'Sample products initialized' });
+      } catch (error) {
+        res.status(400).json({ error: error.message });
+      }
+    });
+    
+    app.listen(process.env.PORT, () => {
+      console.log(`Product service running on port ${process.env.PORT}`);
+    });

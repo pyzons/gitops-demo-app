@@ -1,0 +1,16 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: init-sample-data
+  namespace: ecommerce-backend
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: init-data
+        image: curlimages/curl:latest
+        command: ["/bin/sh"]
+        args: ["-c", "curl -X POST http://product-service:3002/init-products"]
+  backoffLimit: 3
