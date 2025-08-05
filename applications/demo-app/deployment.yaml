@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-app
+  namespace: demo-app
+  labels:
+    app: demo-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: demo-app
+  template:
+    metadata:
+      labels:
+        app: demo-app
+    spec:
+      containers:
+      - name: demo-app
+        image: nginx:1.21
+        ports:
+        - containerPort: 80
+        env:
+        - name: ENVIRONMENT
+          value: "development"
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-app-service
+  namespace: demo-app
+  labels:
+    app: demo-app
+spec:
+  selector:
+    app: demo-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: demo-app-config
+  namespace: demo-app
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>GitOps Demo App</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 40px; }
+            .header { color: #4CAF50; }
+            .info { background-color: #f9f9f9; padding: 20px; border-radius: 5px; }
+        </style>
+    </head>
+    <body>
+        <h1 class="header">🚀 GitOps Demo Application</h1>
+        <div class="info">
+            <h2>Welcome to GitOps!</h2>
+            <p>This application is deployed using GitOps principles with ArgoCD.</p>
+            <p><strong>Environment:</strong> Development</p>
+            <p><strong>Version:</strong> v1.0.0</p>
+            <p><strong>Deployed via:</strong> ArgoCD GitOps</p>
+        </div>
+    </body>
+    </html>
