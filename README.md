@@ -90,7 +90,12 @@ make status
 
 ### 3. Access ArgoCD UI
 ```bash
-# Port-forward to access ArgoCD (runs in foreground)
+# ArgoCD is already accessible via NodePort
+# Direct access without port-forwarding:
+# HTTP:  http://localhost:9080
+# HTTPS: https://localhost:9443
+
+# Alternative: Port-forward to access ArgoCD (runs in foreground)
 kubectl port-forward svc/argocd-server -n argocd 8080:443
 
 # Open browser to: https://localhost:8080
@@ -124,14 +129,26 @@ make kind-delete
 - `make clean` - Clean up resources
 - `make validate` - Validate manifests
 
+### Observability & Monitoring
+- `make observability` - Deploy complete monitoring stack
+- `make dashboards` - Deploy/update Grafana dashboards
+- `make list-dashboards` - List available dashboards
+- `make verify-dashboards` - Verify dashboard functionality
+- `make test-observability` - Test monitoring components
+
+### Complete Workflows
+- `make all` - Complete setup (cluster + ArgoCD + observability)
+- `make setup` - Setup cluster and ArgoCD only
+- `make deploy` - Deploy observability stack
+
 ## Port Mappings
 
 When using the Kind cluster, the following services are available on localhost:
 
 | Service | Port | URL |
 |---------|------|-----|
-| ArgoCD UI | 8080 | http://localhost:8080 |
-| ArgoCD HTTPS | 8443 | https://localhost:8443 |
+| ArgoCD UI | 9080 | http://localhost:9080 |
+| ArgoCD HTTPS | 9443 | https://localhost:9443 |
 | Grafana | 3000 | http://localhost:3000 |
 | Prometheus | 9090 | http://localhost:9090 |
 | HTTP Ingress | 80 | http://localhost:80 |
@@ -145,6 +162,42 @@ When using the Kind cluster, the following services are available on localhost:
 - **Kustomize**: Configuration management
 - **Kubernetes**: Container orchestration
 - **Docker**: Container runtime
+
+## Observability Stack
+
+This demo includes a comprehensive observability stack with:
+
+### 📊 **Monitoring Components**
+- **Prometheus**: Metrics collection and storage
+- **Grafana**: Visualization and dashboards
+- **Node Exporter**: Host-level metrics
+- **Kube State Metrics**: Kubernetes object metrics
+
+### 📈 **Pre-configured Dashboards**
+- **Kubernetes Cluster Overview**: General cluster health and metrics
+- **Node Exporter Metrics**: Detailed system metrics from all nodes  
+- **ArgoCD GitOps Dashboard**: GitOps application status and health
+- **Prometheus Monitoring**: Monitoring stack performance
+
+### 🚀 **Quick Observability Setup**
+```bash
+# Deploy complete observability stack
+make observability
+
+# Verify dashboards are working
+make verify-dashboards
+
+# List available dashboards
+make list-dashboards
+```
+
+### 🔗 **Access Monitoring**
+- **Grafana**: http://localhost:3000 (admin/admin123)
+- **Prometheus**: http://localhost:9090
+- **ArgoCD**: http://localhost:9080
+
+📖 **For complete access information, see [Service Access Guide](SERVICE_ACCESS_GUIDE.md)**
+📖 **For detailed dashboard management, see [Dashboard Management Guide](DASHBOARD_MANAGEMENT.md)**
 
 ## Features
 

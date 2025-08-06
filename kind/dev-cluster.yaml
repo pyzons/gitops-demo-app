@@ -24,13 +24,12 @@ nodes:
   - containerPort: 31186
     hostPort: 8443
     protocol: TCP
-  # Monitoring ports (Grafana)
-  - containerPort: 32000
-    hostPort: 3000
-    protocol: TCP
-  # Monitoring ports (Prometheus)
-  - containerPort: 32090
+  # Observability/Monitoring ports
+  - containerPort: 31000
     hostPort: 9090
+    protocol: TCP
+  - containerPort: 31001
+    hostPort: 3000
     protocol: TCP
   kubeadmConfigPatches:
   - |

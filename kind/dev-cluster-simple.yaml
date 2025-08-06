@@ -19,6 +19,13 @@ nodes:
   - containerPort: 31186
     hostPort: 8443
     protocol: TCP
+  # Observability/Monitoring ports
+  - containerPort: 31000
+    hostPort: 9090
+    protocol: TCP
+  - containerPort: 31001
+    hostPort: 3000
+    protocol: TCP
   kubeadmConfigPatches:
   - |
     kind: InitConfiguration

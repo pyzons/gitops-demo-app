@@ -15,7 +15,7 @@ The cluster exposes the following ports on localhost:
 
 | Service | Port | URL |
 |---------|------|-----|
-| ArgoCD UI | 8080 | http://localhost:8080 |
+| ArgoCD UI | 9080 | http://localhost:9080 |
 | ArgoCD HTTPS | 8443 | https://localhost:8443 |
 | Grafana | 3000 | http://localhost:3000 |
 | Prometheus | 9090 | http://localhost:9090 |
