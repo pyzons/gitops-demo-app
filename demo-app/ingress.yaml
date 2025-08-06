@@ -9,6 +9,7 @@ metadata:
   labels:
     app: demo-web-app
 spec:
+  ingressClassName: nginx
   tls:
   - hosts:
     - localhost
