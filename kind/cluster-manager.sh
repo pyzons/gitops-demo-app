@@ -6,7 +6,7 @@
 set -e
 
 CLUSTER_NAME="dev"
-CONFIG_FILE="$(dirname "$0")/dev-cluster.yaml"
+CONFIG_FILE="dev-cluster-simple.yaml"
 
 usage() {
     echo "Usage: $0 {create|delete|status|reset|logs}"
@@ -37,10 +37,19 @@ create_cluster() {
     fi
     
     echo "📋 Using config: $CONFIG_FILE"
-    kind create cluster --config="$CONFIG_FILE"
+    kind create cluster --config="$(dirname "$0")/$CONFIG_FILE"
     
     echo "⏳ Waiting for cluster to be ready..."
     kubectl wait --for=condition=Ready nodes --all --timeout=300s
+    
+    echo "📦 Installing NGINX Ingress Controller..."
+    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+    
+    echo "⏳ Waiting for ingress controller to be ready..."
+    kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=90s
+    
+    echo "🔧 Configuring ingress controller service for Kind..."
+    kubectl patch svc ingress-nginx-controller -n ingress-nginx -p '{"spec":{"type":"NodePort","ports":[{"name":"http","port":80,"protocol":"TCP","targetPort":"http","nodePort":30269},{"name":"https","port":443,"protocol":"TCP","targetPort":"https","nodePort":31186}]}}'
     
     echo "✅ Cluster created successfully!"
     echo ""
@@ -51,12 +60,10 @@ create_cluster() {
     kubectl get nodes -o wide
     echo ""
     echo "🌐 Port Mappings:"
-    echo "  ArgoCD UI:    http://localhost:8080"
-    echo "  ArgoCD HTTPS: https://localhost:8443" 
-    echo "  Grafana:      http://localhost:3000"
-    echo "  Prometheus:   http://localhost:9090"
-    echo "  HTTP Ingress: http://localhost:80"
-    echo "  HTTPS Ingress:https://localhost:443"
+    echo "  ArgoCD HTTP:  http://localhost:9080"
+    echo "  ArgoCD HTTPS: https://localhost:9443" 
+    echo "  HTTP Ingress: http://localhost:8080"
+    echo "  HTTPS Ingress: https://localhost:8443"
 }
 
 delete_cluster() {

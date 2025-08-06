@@ -5,10 +5,10 @@ kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 name: dev
 
-# Use stable Kubernetes version (1.31.0 is more stable than 1.33.1)
+# Use Kubernetes version 1.33.1
 nodes:
 - role: control-plane
-  image: kindest/node:v1.31.0
+  image: kindest/node:v1.33.1
   extraPortMappings:
   # ArgoCD ports
   - containerPort: 30080
@@ -55,12 +55,12 @@ nodes:
 
 # Worker nodes for application workloads
 - role: worker
-  image: kindest/node:v1.31.0
+  image: kindest/node:v1.33.1
   labels:
     workload-type: "applications"
 
 - role: worker
-  image: kindest/node:v1.31.0
+  image: kindest/node:v1.33.1
   labels:
     workload-type: "monitoring"
 

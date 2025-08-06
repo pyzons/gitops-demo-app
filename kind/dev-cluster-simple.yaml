@@ -3,7 +3,7 @@ apiVersion: kind.x-k8s.io/v1alpha4
 name: dev
 nodes:
 - role: control-plane
-  image: kindest/node:v1.31.0
+  image: kindest/node:v1.33.1
   extraPortMappings:
   # ArgoCD ports
   - containerPort: 30080
@@ -26,4 +26,4 @@ nodes:
       kubeletExtraArgs:
         node-labels: "ingress-ready=true"
 - role: worker
-  image: kindest/node:v1.31.0
+  image: kindest/node:v1.33.1
